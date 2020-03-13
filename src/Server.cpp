@@ -43,15 +43,34 @@ void Server::initialize(unsigned int board_size,
                         string p1_setup_board,
                         string p2_setup_board) {
 
-    if (board_size != BOARD_SIZE){
-        throw ServerException("Incorrect board size");
+    ifstream p1file;
+    ifstream p2file;
+    string line;
+
+    p1file.open(p1_setup_board);
+    p2file.open(p2_setup_board);
+
+    while(getline(p1file, line)){
+        if (line.length() != board_size){
+            throw ServerException("Incorrect board size");
+        }
     }
-    else if (p1_setup_board.length() < 1 || p2_setup_board.length() < 1){
+
+    line = "";
+    while(getline(p2file, line)){
+        if (line.length() != board_size){
+            throw ServerException("Incorrect board size");
+        }
+    }
+
+    if (p1_setup_board.length() < 1 || p2_setup_board.length() < 1){
         throw ServerException("Empty board files");
     }
     else{
         this->board_size = board_size;
     }
+    p1file.close();
+    p2file.close();
 }
 
 /**
