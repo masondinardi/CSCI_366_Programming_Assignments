@@ -17,8 +17,6 @@
 
 #include "common.hpp"
 #include "Server.hpp"
-#include <cstring>
-#include <iostream>
 
 /**
  * Calculate the length of a file (helper function)
@@ -43,18 +41,16 @@ int get_file_length(ifstream *file){
 
 void Server::initialize(unsigned int board_size,
                         string p1_setup_board,
-                        string p2_setup_board){
-
-    this->board_size = board_size;
+                        string p2_setup_board) {
 
     if (board_size != BOARD_SIZE){
         throw ServerException("Incorrect board size");
     }
-    else if (p1_setup_board == "" || p2_setup_board == ""){
+    else if (p1_setup_board.length() < 1 || p2_setup_board.length() < 1){
         throw ServerException("Empty board files");
     }
     else{
-        board_size = BOARD_SIZE;
+        this->board_size = board_size;
     }
 }
 
@@ -71,7 +67,7 @@ void Server::initialize(unsigned int board_size,
 
 int Server::evaluate_shot(unsigned int player, unsigned int x, unsigned int y) {
 
-    if(player < 1 || player > 2){
+    if(player < 1 || player > MAX_PLAYERS){
         throw ServerException("Bad player number");
     }
 
@@ -113,7 +109,7 @@ int Server::evaluate_shot(unsigned int player, unsigned int x, unsigned int y) {
  */
 int Server::process_shot(unsigned int player) {
 
-    if(player < 1 || player > 2){
+    if(player < 1 || player > MAX_PLAYERS){
         throw ServerException("Bad player number");
     }
 
@@ -122,7 +118,10 @@ int Server::process_shot(unsigned int player) {
     string resultf = "player_" + to_string(player) + ".result.json";
 
     ifstream ipf(shotf);
-    if(ipf.good()) {
+    if(!ipf){
+        return NO_SHOT_FILE;
+    }
+    else if(ipf.good()) {
         cereal::JSONInputArchive read_archive(ipf);
         read_archive(x, y);
         ipf.close();
@@ -136,7 +135,5 @@ int Server::process_shot(unsigned int player) {
         cereal::JSONOutputArchive write_archive(opf);
         write_archive(CEREAL_NVP(result));
         return SHOT_FILE_PROCESSED;
-    } else {
-        return NO_SHOT_FILE;
     }
 }
