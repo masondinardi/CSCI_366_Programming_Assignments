@@ -144,10 +144,8 @@ string Client::render_action_board(){
     ipf.close();
     remove(playerf.c_str());
 
-    for(int i = 0; i < 21; i++)
-    {
-        for(int j = 0; j < 21; j++)
-        {
+    for(int i = 0; i < 21; i++){
+        for(int j = 0; j < 21; j++){
             boardstr += to_string(board[i][j]);
         }
     }

@@ -56,7 +56,6 @@ void Server::initialize(unsigned int board_size,
     else{
         board_size = BOARD_SIZE;
     }
-
 }
 
 /**
@@ -96,11 +95,11 @@ int Server::evaluate_shot(unsigned int player, unsigned int x, unsigned int y) {
                 inpf >> board[i][j];
             }
         }
-        if(board[x][y] == '_'){
-            return MISS;
-        } else{
-            return HIT;
-        }
+    }
+    if(board[x][y] == '_'){
+        return MISS;
+    } else{
+        return HIT;
     }
 }
 
@@ -112,7 +111,6 @@ int Server::evaluate_shot(unsigned int player, unsigned int x, unsigned int y) {
  * @param player - player number
  * @return returns SHOT_PROCESSED, or NO_SHOT_FILE if nothing to process
  */
-
 int Server::process_shot(unsigned int player) {
 
     if(player < 1 || player > 2){
@@ -124,18 +122,21 @@ int Server::process_shot(unsigned int player) {
     string resultf = "player_" + to_string(player) + ".result.json";
 
     ifstream ipf(shotf);
-    cereal::JSONInputArchive read_archive(ipf);
-    read_archive(x, y);
-    ipf.close();
-    remove(shotf.c_str());
+    if(ipf.good()) {
+        cereal::JSONInputArchive read_archive(ipf);
+        read_archive(x, y);
+        ipf.close();
+        remove(shotf.c_str());
 
-    int result = evaluate_shot(player, y, x);
+        int result = evaluate_shot(player, y, x);
 
-    remove(resultf.c_str());
+        remove(resultf.c_str());
 
-    ofstream opf(resultf);
-    cereal::JSONOutputArchive write_archive(opf);
-    write_archive(CEREAL_NVP(result));
-
-   return NO_SHOT_FILE;
+        ofstream opf(resultf);
+        cereal::JSONOutputArchive write_archive(opf);
+        write_archive(CEREAL_NVP(result));
+        return SHOT_FILE_PROCESSED;
+    } else {
+        return NO_SHOT_FILE;
+    }
 }
