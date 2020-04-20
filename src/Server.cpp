@@ -84,6 +84,13 @@ void Server::initialize(unsigned int board_size,
  * @return returns shot result as either HIT, MISS, or OUT_OF_BOUNDS
  */
 
+Server::~Server() {
+}
+
+
+BitArray2D *Server::scan_setup_board(string setup_board_name){
+}
+
 int Server::evaluate_shot(unsigned int player, unsigned int x, unsigned int y) {
 
     if(player < 1 || player > MAX_PLAYERS){
