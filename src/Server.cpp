@@ -73,6 +73,15 @@ void Server::initialize(unsigned int board_size,
     p2file.close();
 }
 
+
+
+Server::~Server() {
+}
+
+
+BitArray2D *Server::scan_setup_board(string setup_board_name){
+}
+
 /**
  * Checks the coordinates of a shot against setup board of player
  *
@@ -83,13 +92,6 @@ void Server::initialize(unsigned int board_size,
  * @param y - coordinate
  * @return returns shot result as either HIT, MISS, or OUT_OF_BOUNDS
  */
-
-Server::~Server() {
-}
-
-
-BitArray2D *Server::scan_setup_board(string setup_board_name){
-}
 
 int Server::evaluate_shot(unsigned int player, unsigned int x, unsigned int y) {
 
